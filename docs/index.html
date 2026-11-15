@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>hyland13ETF</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+</head>
+<body>
+<header>
+  <h1>hyland13ETF</h1>
+  <p class="meta" id="meta-line">加载中…</p>
+</header>
+
+<main>
+  <!-- 当前信号 -->
+  <section class="cards" id="signal-cards">
+    <div class="card signal">
+      <h2>📅 本月首个交易日应持仓</h2>
+      <div id="month-first-targets" class="targets">…</div>
+      <p class="asof" id="month-first-asof"></p>
+    </div>
+    <div class="card signal">
+      <h2>⚡ 最新信号（参考，策略实际每月调仓）</h2>
+      <div id="latest-targets" class="targets">…</div>
+      <p class="asof" id="latest-asof"></p>
+    </div>
+  </section>
+
+  <!-- 指标卡 -->
+  <section class="cards" id="metric-cards"></section>
+
+  <!-- 趋势图 -->
+  <section class="card">
+    <h2>📈 净值趋势 · 策略 vs 沪深300 vs 上证指数</h2>
+    <div id="chart" class="chart"></div>
+  </section>
+
+  <!-- 分年段 -->
+  <section class="card">
+    <h2>📊 分年段表现</h2>
+    <table id="seg-table" class="tbl"></table>
+  </section>
+
+  <!-- 动量排名 -->
+  <section class="card">
+    <h2>🏆 动量排名 · 仅正分标的（前3入选，负分空仓）</h2>
+    <table id="rank-table" class="tbl"></table>
+  </section>
+
+  <!-- 每月持仓 -->
+  <section class="card">
+    <h2>🗂 每月调仓持仓</h2>
+    <div class="tbl-wrap"><table id="hold-table" class="tbl"></table></div>
+  </section>
+</main>
+
+<footer>
+  <p id="footer-line">—</p>
+  <p>回测口径：每月首个交易日收盘调仓 · 滑点0.2% · 佣金0.02% · 数据源腾讯前复权 · 仅供参考，不构成投资建议</p>
+  <p>作者：<a href="mailto:hyland.cui@gmail.com">hyland.cui@gmail.com</a></p>
+</footer>
+
+<script src="app.js?v=4"></script>
+</body>
+</html>
