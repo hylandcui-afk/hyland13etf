@@ -43,6 +43,11 @@ function renderMetrics(m) {
 
 // ── 趋势图 ──
 function renderChart(nav) {
+  if (typeof echarts === "undefined") {
+    document.getElementById("chart").innerHTML =
+      '<p style="color:#8b95a8;padding:40px;text-align:center">图表组件加载失败，请刷新重试</p>';
+    return;
+  }
   const chart = echarts.init(document.getElementById("chart"));
   const series = [
     { name: "策略", data: nav.strategy, color: "#f5a623", width: 2.4 },
@@ -143,6 +148,6 @@ fetch("data/results.json", { cache: "no-store" })
       `数据截至 ${d.meta.data_end} · GitHub Actions 每个交易日 16:30 自动更新`;
   })
   .catch(e => {
-    document.getElementById("meta-line").textContent = "❌ 加载 results.json 失败：" + e.message +
-      "（本地预览请先跑 python app/build_results.py，再用 python -m http.server 打开，不要直接双击文件）";
+    document.getElementById("meta-line").textContent =
+      "❌ 页面数据加载失败：" + e.message + "（请刷新重试）";
   });
