@@ -151,3 +151,46 @@ fetch("data/results.json", { cache: "no-store" })
     document.getElementById("meta-line").textContent =
       "❌ 页面数据加载失败：" + e.message + "（请刷新重试）";
   });
+
+
+// ── 刷新按钮 ──
+(async () => {
+  const cfg = await fetch("config.json", { cache: "no-store" }).then(r => r.json()).catch(() => null);
+  const btn = document.getElementById("refresh-btn");
+  const st = document.getElementById("refresh-status");
+  if (!cfg || !cfg.workerUrl) return; // 未配置则隐藏
+  btn.hidden = false;
+  const RUNS = "https://api.github.com/repos/hylandcui-afk/hyland13etf/actions/workflows/update.yml/runs?per_page=1";
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  let busy = false;
+  btn.addEventListener("click", async () => {
+    if (busy) return;
+    busy = true;
+    btn.disabled = true;
+    try {
+      st.textContent = "正在触发更新…";
+      const res = await fetch(cfg.workerUrl, { method: "POST" });
+      const j = await res.json();
+      if (!j.ok) throw new Error(j.reason === "run_in_progress" ? "已有更新在进行，请稍候" : "触发失败，请稍后重试");
+      st.textContent = "已触发，正在获取最新数据…";
+      const t0 = Date.now();
+      for (let i = 0; i < 30; i++) {          // 最多等 15 分钟
+        await sleep(30000);
+        const runs = await fetch(RUNS).then(r => r.json()).catch(() => null);
+        const run = runs && runs.workflow_runs && runs.workflow_runs[0];
+        if (run && Date.parse(run.created_at) > t0 - 120000 && run.status === "completed") {
+          st.textContent = "✔ 已更新，刷新页面…";
+          location.reload();
+          return;
+        }
+        st.textContent = "更新运行中…（" + Math.round((Date.now() - t0) / 60000) + " 分钟）";
+      }
+      st.textContent = "⏳ 更新超时，请稍后手动刷新页面";
+    } catch (e) {
+      st.textContent = "✖ " + e.message;
+    } finally {
+      btn.disabled = false;
+      busy = false;
+    }
+  });
+})();
